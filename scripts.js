@@ -6,19 +6,25 @@ class Posts {
     }
 
     sendPost() {
-        const request = new XMLHttpRequest();
+        return new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
 
-        request.addEventListener('readystatechange', () => {
-            if (request.readyState === 4 && request.status === 200) {
-                const data = JSON.parse(request.responseText);
+            request.addEventListener('readystatechange', () => {
+                if (request.readyState !== 4) return;
 
-                this.createWrap(data);
-            }
+                if (request.status === 200) {
+                    const data = JSON.parse(request.responseText);
+
+                    resolve(data);
+                } else {
+                    reject('Ошибка');
+                }
+            });
+
+            request.open('GET', this.url);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send();
         });
-
-        request.open('GET', this.url);
-        request.setRequestHeader('Content-Type', 'application/json');
-        request.send();
     }
 
     createWrap(data) {
@@ -39,7 +45,13 @@ class Posts {
     }
 
     init() {
-        this.sendPost();
+        this.sendPost()
+            .then(data => {
+                this.createWrap(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 }
 const posts = new Posts();
