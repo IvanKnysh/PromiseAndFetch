@@ -10,7 +10,9 @@ class Posts {
             const request = new XMLHttpRequest();
 
             request.addEventListener('readystatechange', () => {
-                if (request.readyState === 4 && request.status === 200) {
+                if (request.readyState !== 4) return;
+
+                if (request.status === 200) {
                     const data = JSON.parse(request.responseText);
 
                     resolve(data);
