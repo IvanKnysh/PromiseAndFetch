@@ -2,7 +2,7 @@
 
 class Posts {
     constructor() {
-        this.url = 'https://jsonplaceholder.typicode.com/posts';
+        this.url = 'https://jsonplaceholder.typicode.com/photos';
     }
 
     sendPost() {
@@ -27,20 +27,25 @@ class Posts {
         });
     }
 
-    createWrap(data) {
-        data.forEach(item => {
-            if (item.userId === 1) {
-                let posts = `
-                    <div class="col-12 col-md-6">
-                        <div class="wrap">
-                            <h2 class="title">${item.title}</h2>
-                            <p>${item.body}</p>
-                        </div>
-                    </div>
-                `;
+    randArr() {
+        let arr = [];
+        for (let i = 1; i <= 5; i++) {
+            arr.push(Math.floor(Math.random() * 5000));
+        }
+        return arr;
+    }
 
-                document.querySelector('.row').insertAdjacentHTML('beforeend', posts);
-            }
+    createWrap(data) {
+        this.randArr().forEach(item => {
+            let posts = `
+                <div class="col-12 col-md-6">
+                    <div class="wrap">
+                        <img src="${data[item].url}" alt="">
+                    </div>
+                </div>
+            `;
+
+            document.querySelector('.row').insertAdjacentHTML('beforeend', posts);
         });
     }
 
