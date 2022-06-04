@@ -6,25 +6,19 @@ class Posts {
     }
 
     sendPost() {
-        return new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-
-            request.addEventListener('readystatechange', () => {
-                if (request.readyState !== 4) return;
-
-                if (request.status === 200) {
-                    const data = JSON.parse(request.responseText);
-
-                    resolve(data);
-                } else {
-                    reject('Ошибка');
+        fetch(this.url)
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error('Response status is not 200');
                 }
+                return response.json();
+            })
+            .then(data => {
+                this.createWrap(data);
+            })
+            .catch(error => {
+                console.error(error);
             });
-
-            request.open('GET', this.url);
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.send();
-        });
     }
 
     randArr() {
@@ -50,13 +44,7 @@ class Posts {
     }
 
     init() {
-        this.sendPost()
-            .then(data => {
-                this.createWrap(data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        this.sendPost();
     }
 }
 const posts = new Posts();
